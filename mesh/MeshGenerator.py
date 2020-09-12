@@ -18,7 +18,12 @@ def line1DL2(a, b, num):
     return mesh
 
 mesh = line1DL2(0.0, 1.0, 10)
-mesh.printNodes()
-mesh.printElements()
-mesh.printBoundaries()
+# mesh.printNodes()
+# mesh.printElements()
+# mesh.printBoundaries()
+
+print(mesh.NumberOfNodes)
+print(mesh.NumberOfElements)
+print(mesh.NumberOfBoundaries)
 mesh.saveMesh("mymesh1D.txt")
+print(mesh.NumberOfNodes)

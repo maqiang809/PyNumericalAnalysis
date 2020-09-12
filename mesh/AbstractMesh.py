@@ -19,6 +19,18 @@ class AMesh:
         self.boundaries = None
         self.boundaryLabel = None
 
+    @property
+    def NumberOfNodes(self):
+        return self.nv
+
+    @property
+    def NumberOfElements(self):
+        return self.nt
+
+    @property
+    def NumberOfBoundaries(self):
+        return self.nb
+
     def initMesh0(self, nv, nt, nb):
         self.nv = nv
         self.nt = nt
