@@ -28,8 +28,16 @@ class AMesh:
         return self.nt
 
     @property
+    def NumberPerElement(self):
+        return self.nPerElement
+
+    @property
     def NumberOfBoundaries(self):
         return self.nb
+
+    @property
+    def NumberPerBoundary(self):
+        return self.nPerBoundary
 
     def initMesh0(self, nv, nt, nb):
         self.nv = nv
