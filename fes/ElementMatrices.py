@@ -17,7 +17,7 @@ def elementHeatStiff2DT3(self, coord, coef, tp):
         return eleMatrix
     elif tp == "MATRIX_COMMON":
         return np.dot(np.dot(grad, coef), np.transpose(grad)) * area
-    elif tp == "MATRIC_AXIS":
+    elif tp == "MATRIX_AXIS":
         return np.dot(np.dot(grad, coef), np.transpose(grad)) * (area * np.average(coord[:, 0]))
     else:
         raise ValueError("Wrong BVPType!")

@@ -18,6 +18,19 @@ class AMesh:
         self.elementLabel = None
         self.boundaries = None
         self.boundaryLabel = None
+    def initMesh0(self, nv, nt, nb):
+        self.nv = nv
+        self.nt = nt
+        self.nb = nb
+        self.nodes = np.zeros((self.nv, self.nDim), dtype=np.float)
+        self.nodeLabel = np.zeros(self.nv, dtype=np.int32)
+        self.elements = np.zeros((self.nt, self.nPerElement), dtype=np.int32)
+        self.elementLabel = np.zeros(self.nt, dtype=np.int32)
+        self.boundaries = np.zeros((self.nb, self.nPerBoundary), dtype=np.int32)
+        self.boundaryLabel = np.zeros(self.nb, dtype=np.int32)
+    @property
+    def Dim(self):
+        return self.nDim
 
     @property
     def NumberOfNodes(self):
@@ -39,16 +52,21 @@ class AMesh:
     def NumberPerBoundary(self):
         return self.nPerBoundary
 
-    def initMesh0(self, nv, nt, nb):
-        self.nv = nv
-        self.nt = nt
-        self.nb = nb
-        self.nodes = np.zeros((self.nv, self.nDim), dtype=np.float)
-        self.nodeLabel = np.zeros(self.nv, dtype=np.int32)
-        self.elements = np.zeros((self.nt, self.nPerElement), dtype=np.int32)
-        self.elementLabel = np.zeros(self.nt, dtype=np.int32)
-        self.boundaries = np.zeros((self.nb, self.nPerBoundary), dtype=np.int32)
-        self.boundaryLabel = np.zeros(self.nb, dtype=np.int32)
+    def getElement(self, i):
+        return self.elements[i]
+
+    def getElementLabel(self, i):
+        return self.elementLabel[i]
+
+    def getElement(self, i):
+        return self.elements[i].copy()
+
+    def getBoundary(self, i):
+        return self.boundaries[i].copy()
+
+    def getCoordInElement(self, ele):
+        return self.nodes[ele, :]
+
 
     def saveMesh(self, fileName):
         f = open(fileName, 'w')
