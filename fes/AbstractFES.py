@@ -5,6 +5,16 @@ def getCoefFromFunc(coefFunc, coord, label, param, coef):
         for j in range(col):
             coef[i][j] = coefFunc[i](coord[j, :], label, param)
 
+def getDof(ele, dofPerNode):
+    n = len(ele)
+    dof = np.zeros(n * dofPerNode, dtype=np.int32)
+    for i in range(n):
+        start = ele[i] * dofPerNode
+        startIdx = i * dofPerNode
+        for j in range(dofPerNode):
+            dof[j + startIdx] = start + j
+    return dof
+
 class FES:
     def __init__(self, mesh, dofPerNode):
         self.mesh = mesh
@@ -29,19 +39,5 @@ class FES:
             coord = self.mesh.getCoordInElement(ele)
             getCoefFromFunc(coeffFunc, coord, self.mesh.getElementLabel(i), param, coef)
             EleMatFunc(coord, coef, BVPType, eleMatrix)
-
-
-    tp,
-    SRMatrix
-    A) {
-        double[][]
-    coef = new
-    double[coeffFunc.length][nPerEle];
-    for (int i = 0; i < nE; i++) {
-        int[] ele = mesh.getElement(i);
-    mesh.getCoordPerElement(ele, coordRegion);
-    getCoefFromFunc(coeffFunc, coordRegion, mesh.getElementLabel(i), param, coef);
-    computeEleMa.action(coordRegion, coef, tp, eleMatrixRegion);
-    A.assemble(getDof(ele), eleMatrixRegion);
-    }
-    }
+            dof = getDof(ele, self.dofPerNode)
+            A.assemble_RC(dof, dof, eleMatrix)

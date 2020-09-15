@@ -1,15 +1,12 @@
 import numpy as np
 from scipy import sparse
-
 from numerics.ParamCheck import checkEqual
-
-
 class SMatrix:
 
     def __init__(self, **params):  # 设置稀疏矩阵的维数
         paramLen = len(params)
         if paramLen == 2:
-            m, n = params['row'], params['column']
+            m, n = params['row'], params['col']
             self.m, self.n = m, n
             self.mat = [None] * m
             for i in range(m):
@@ -22,8 +19,8 @@ class SMatrix:
             for i in range(m):
                 self.mat[i] = []
         elif paramLen == 5:
-            m, n = params['row'], params['column']
-            rowIdx, colIdx, values = params['rowIdx'], params['columnIdx'], params['values']
+            m, n = params['row'], params['col']
+            rowIdx, colIdx, values = params['rowIdx'], params['colIdx'], params['values']
             self.m, self.n = m, n
             self.mat = [None] * m
             for i in range(m):
@@ -97,7 +94,7 @@ class SMatrix:
         print(self.m, self.n, nnz)
         for i in range(self.m):
             for ele in self.mat[i]:
-                print(i, ele[0], ele[1])
+                print("%-8d%-8d%.10f" % (i, ele[0], ele[1]))
 
     def getNNZ(self):  # 获得非零元总数
         count = 0
@@ -199,5 +196,15 @@ class SMatrix:
         return result
 
 # A.printMatrix()
-
+A = SMatrix(row=5, col=5)
+A.printMatrix()
+for i in range(3):
+    for j in range(3):
+        A.setElement(i, j, 1.0/(i + j + 1))
+A.setElement(4, 4, 2.0)
+A.setElement(4, 2, 3.5)
+A.printMatrix()
+A.sort()
+print("sorted matrix")
+A.printMatrix()
 

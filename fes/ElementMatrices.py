@@ -1,7 +1,16 @@
 from fes.ComputationalGeometry import *
 
+def elementHeatStiff1DL2(coord, coef, tp):
+    grad, len = gradient1DL2(coord)
+    eleMatrix = np.zeros((2, 2), dtype=np.float64)
+    if tp == "COMMON":
+        coef = 0.5 * np.average(coef[0]) / len;
+        eleMatrix[0][0] = eleMatrix[1][1] = coef;
+        eleMatrix[0][1] = eleMatrix[1][0] = -coef;
+    else:
+        raise ValueError("Wrong BVPType!")
 
-def elementHeatStiff2DT3(self, coord, coef, tp):
+def elementHeatStiff2DT3(coord, coef, tp):
     grad, area = gradient2DT3(coord)
     eleMatrix = np.zeros((3, 3), dtype=np.float64)
     if tp == "COMMON":

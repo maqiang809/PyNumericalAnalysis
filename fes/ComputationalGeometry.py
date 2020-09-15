@@ -41,6 +41,12 @@ def volume3DT4(coord):
 def volume3DTH8(xyz):
     pass
 
+def gradient1DL2(coord):
+    x = coord[:, 0]
+    len = np.abs(x[0] - x[1])
+    grad = np.array([-1.0/len, 1.0/len])
+    return grad, len
+
 def gradient2DT3(coord):
     x, y = coord[:, 0], coord[:, 1]
     area = 0.5 * ((x[1] - x[0]) * (y[2] - y[0]) - (x[2] - x[0]) * (y[1] - y[0]))
