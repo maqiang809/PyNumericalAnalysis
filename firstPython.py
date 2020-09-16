@@ -1,4 +1,5 @@
 import numpy as np
+import scipy as sp
 n = np.zeros(5)
 print(n)
 for i in range(100):
