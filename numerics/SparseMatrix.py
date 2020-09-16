@@ -1,8 +1,10 @@
 import numpy as np
 from scipy import sparse
 from numerics.ParamCheck import checkEqual
+'''
+sparse matrix
+'''
 class SMatrix:
-
     def __init__(self, **params):  # 设置稀疏矩阵的维数
         paramLen = len(params)
         if paramLen == 2:
@@ -31,7 +33,16 @@ class SMatrix:
         else:
             raise ValueError("Param Error!")
 
-    def setElement(self, i, j, val):  # 设置(i,j)的元素值，如果输入了零值，需删除
+    def setElement(self, i, j, val):
+        """ 设置(i,j)的元素值，如果输入了零值，需删除
+        Args:
+            i: 矩阵行指标
+            j: 矩阵列指标
+            val: 要设置的值
+        Returns:
+        Raises:
+            ValueError: 如果行指标与列指标超过矩阵行列指标范围, 则报错
+        """
         row = self.mat[i]
         nRow = len(self.mat[i])
         for k in range(nRow):
