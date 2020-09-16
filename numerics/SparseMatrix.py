@@ -206,16 +206,16 @@ class SMatrix:
             print('wrong!')
         return result
 
+# # A.printMatrix()
+# A = SMatrix(row=5, col=5)
 # A.printMatrix()
-A = SMatrix(row=5, col=5)
-A.printMatrix()
-for i in range(3):
-    for j in range(3):
-        A.setElement(i, j, 1.0/(i + j + 1))
-A.setElement(4, 4, 2.0)
-A.setElement(4, 2, 3.5)
-A.printMatrix()
-A.sort()
-print("sorted matrix")
-A.printMatrix()
+# for i in range(3):
+#     for j in range(3):
+#         A.setElement(i, j, 1.0/(i + j + 1))
+# A.setElement(4, 4, 2.0)
+# A.setElement(4, 2, 3.5)
+# A.printMatrix()
+# A.sort()
+# print("sorted matrix")
+# A.printMatrix()
 
