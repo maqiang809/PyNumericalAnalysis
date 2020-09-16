@@ -1,11 +1,25 @@
 import numpy as np
 
 def length2DL2(xy):
+    """
+    compute the length of a two-dimensional line
+    :param xy: coords of the end points of a line, xy[0, :]: left end; xy[1, :]: right end
+    :return: length of the line
+    """
     return np.sqrt((xy[0][0] - xy[1][0]) * (xy[0][0] - xy[1][0]) + (xy[0][1] - xy[1][1]) * (xy[0][1] - xy[1][1]))
 
 def area2DT3(xy):
+    """
+    compute the area of a two-dimensional triangle
+    :param xy: three vertices of the triangles, size: 3 x 2
+    :return: area of the triangle with sign. Positive if the points are arranged in counter-clockwise order; negegative if not.
+    """
     x, y = xy[:, 0], xy[:, 1]
     return 0.5 * ((x[1] - x[0]) * (y[2] - y[0]) - (x[2] - x[0]) * (y[1] - y[0]))
+
+def area2DQ4(xy):
+    xy1, xy2 = xy[[0, 1, 2], :], xy[[0, 2, 3], :]
+    return area2DT3(xy1) + area2DT3(xy2)
 
 def area3DT3(xyz):
     x, y, z = xyz[:, 0], xyz[:, 1], xyz[:, 2]
@@ -15,12 +29,8 @@ def area3DT3(xyz):
     p = 0.5 * (a + b + c)
     return np.sqrt(p * (p - a) * (p - b) * (p - c));
 
-def area2DQ4(xy):
-    xy1, xy2 = xy[[0, 1, 2]][:], xy[[0, 2, 3]][:]
-    return area2DT3(xy1) + area2DT3(xy2)
-
 def area3DQ4(xyz):
-    xyz1, xyz2 = xyz[[0, 1, 2]][:], xyz[[0, 2, 3]][:]
+    xyz1, xyz2 = xyz[[0, 1, 2], :], xyz[[0, 2, 3], :]
     return area3DT3(xyz1) + area3DT3(xyz2)
 
 def volume3DT4(coord):
