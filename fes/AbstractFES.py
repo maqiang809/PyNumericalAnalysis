@@ -41,3 +41,29 @@ class FES:
             EleMatFunc(coord, coef, BVPType, eleMatrix)
             dof = getDof(ele, self.dofPerNode)
             A.assemble_RC(dof, dof, eleMatrix)
+
+    def assembleGlobalMatrix_Const(self, constCoef, EleMatFunc, BVPType, A):
+        nc = len(constCoef)
+        coef = np.zeros((nc, self.nPerEle), dtype=np.float)
+        eleMatrix = np.zeros((self.dofPerElement, self.dofPerElement), dtype = np.float)
+        for i in range(self.nE):
+            ele = self.mesh.getElement(i)
+            coord = self.mesh.getCoordInElement(ele)
+            for j in range(nc):
+                coef[j, :] = constCoef[j]
+            EleMatFunc(coord, coef, BVPType, eleMatrix)
+            dof = getDof(ele, self.dofPerNode)
+            A.assemble_RC(dof, dof, eleMatrix)
+
+    def assembleGlobalVector_Const(self, constCoef, EleVecFunc, BVPType, VEC):
+        nc = len(constCoef)
+        coef = np.zeros((nc, self.nPerEle), dtype=np.float)
+        eleVec = np.zeros(self.dofPerElement, dtype = np.float)
+        for i in range(self.nE):
+            ele = self.mesh.getElement(i)
+            coord = self.mesh.getCoordInElement(ele)
+            for j in range(nc):
+                coef[j, :] = constCoef[j]
+            EleVecFunc(coord, coef, BVPType, eleVec)
+            dof = getDof(ele, self.dofPerNode)
+            VEC[dof] += eleVec

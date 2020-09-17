@@ -67,6 +67,13 @@ class AMesh:
     def getCoordInElement(self, ele):
         return self.nodes[ele, :]
 
+    def getBoundariesNodes(self, label):      # 已知边界label 求出该边界上所有的节点
+        bdNodes = []
+        for i in range(self.nb):
+            ele = self.boundaries[i, :]
+            if self.boundaryLabel[i] in label:
+                bdNodes.extend(ele)
+        return np.unique(bdNodes)     # unique方法能删除列表的重复元素 并从小到大排序
 
     def saveMesh(self, fileName):
         f = open(fileName, 'w')
