@@ -24,7 +24,7 @@ fs.assembleSource_func([f], None, "COMMON", RHS)
 # RHS[-1] = 0
 # print(RHS)
 
-fs.applyBC_MBN_Const(A, RHS, "x", 0.0, None, [1, 2, 3, 4])
+fs.applyBC_MBN_MR(A, RHS, "x", 0.0, None, [1, 2, 3, 4])
 #A.printMatrix()
 solve = factorized(A.toCSC_Matrix())
 x = solve(RHS)

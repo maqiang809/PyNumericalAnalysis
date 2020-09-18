@@ -3,17 +3,10 @@ def getCoefFromFunc(coefFunc, coord, label, param, coef):
     row, col = coef.shape
     for i in range(row):
         for j in range(col):
-            coef[i][j] = coefFunc[i](coord[j, :], label, param)
+            coef[i, j] = coefFunc[i](coord[j, :], label, param)
 
 def getDof(ele, dofPerNode):
-    n = len(ele)
-    dof = np.zeros(n * dofPerNode, dtype=np.int32)
-    for i in range(n):
-        start = ele[i] * dofPerNode
-        startIdx = i * dofPerNode
-        for j in range(dofPerNode):
-            dof[j + startIdx] = start + j
-    return dof
+    return np.tile(np.arange(dofPerNode), len(ele))  + np.repeat(ele * dofPerNode, dofPerNode)
 
 DIRECT = {"x":0, "y":1, "z":2, "all":-1}
 
@@ -83,7 +76,7 @@ class FES:
             dof = getDof(ele, self.dofPerNode)
             VEC[dof] += eleVec
 
-    def applyBC_MBN_Const(self, A, RHS, direct=None, bdValue=None, param=None, label=None):
+    def applyBC_MBN_MR(self, A, RHS, direct=None, bdValue=None, param=None, label=None):
         bdNodes = self.mesh.getBoundariesNodes(label)
         if direct is None:
             for nodeIdx in bdNodes:
@@ -112,3 +105,53 @@ class FES:
                 A.setElement(localIdx, localIdx, 1.0e30)
                 RHS[localIdx] = value * 1.0e30
 
+    def applyBC_MBN_M(self, RHS, direct=None, bdValue=None, param=None, label=None):
+        bdNodes = self.mesh.getBoundariesNodes(label)
+        if direct is None:
+            for nodeIdx in bdNodes:
+                coord = self.mesh.getCoordFromIdx(nodeIdx)
+                value = 0
+                if bdValue is not None:
+                    if callable(bdValue):
+                        value = bdValue(coord, self.mesh.getNodeLabel[nodeIdx], param)
+                    else:
+                        value = bdValue
+                RHS[np.arange(self.dofPerNode) + nodeIdx * self.dofPerNode] = value * 1.0e30
+        else:
+            offset = DIRECT[direct]
+            for nodeIdx in bdNodes:
+                coord = self.mesh.getCoordFromIdx(nodeIdx)
+                value = 0
+                if bdValue is not None:
+                    if callable(bdValue):
+                        value = bdValue(coord, self.mesh.getNodeLabel[nodeIdx], param)
+                    else:
+                        value = bdValue
+                RHS[nodeIdx * self.dofPerNode + offset] = value * 1.0e30
+
+    def applyBC_MBN_MR(self, A, direct=None, bdValue=None, param=None, label=None):
+        bdNodes = self.mesh.getBoundariesNodes(label)
+        if direct is None:
+            for nodeIdx in bdNodes:
+                coord = self.mesh.getCoordFromIdx(nodeIdx)
+                value = 0
+                if bdValue is not None:
+                    if callable(bdValue):
+                        value = bdValue(coord, self.mesh.getNodeLabel[nodeIdx], param)
+                    else:
+                        value = bdValue
+                localIdx = np.arange(self.dofPerNode) + nodeIdx * self.dofPerNode
+                for idx in localIdx:
+                    A.setElement(localIdx, localIdx, 1.0e30)
+        else:
+            offset = DIRECT[direct]
+            for nodeIdx in bdNodes:
+                coord = self.mesh.getCoordFromIdx(nodeIdx)
+                value = 0
+                if bdValue is not None:
+                    if callable(bdValue):
+                        value = bdValue(coord, self.mesh.getNodeLabel[nodeIdx], param)
+                    else:
+                        value = bdValue
+                localIdx = nodeIdx * self.dofPerNode + offset
+                A.setElement(localIdx, localIdx, 1.0e30)
