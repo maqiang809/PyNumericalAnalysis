@@ -11,6 +11,9 @@ class Mesh1DL2(AMesh):
         self.tecplotType = "FELINESEG"
         self.nBoundaryPerElement = 2
 
-    def plotSolution(self, x):
+    def plotSolution(self, x, xLabel, yLabel, title):
         plt.plot(self.nodes, x)
+        plt.xlabel(xLabel)
+        plt.ylabel(yLabel)
+        plt.title(title)
         plt.show()
