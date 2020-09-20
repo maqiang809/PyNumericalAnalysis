@@ -25,7 +25,7 @@ class FES:
         self.nPerBoundary = mesh.NumberPerBoundary
         self.dofPerBoundary = dofPerNode * mesh.NumberPerBoundary
 
-    def assembleBlobalMatrix(self, coef, param, EleMatFunc, tp, A):
+    def assembleGlobalMatrix(self, coef, param, EleMatFunc, tp, A):
         if callable(coef):
             self.assembleGlobalMatrix_Func(coef, param, EleMatFunc, tp, A)
         elif isinstance(coef, np.ndarray):
