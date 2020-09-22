@@ -1,5 +1,5 @@
 import numpy as np
-
+import abc
 class AMesh:
     def __init__(self):
         self.nv = 0
@@ -52,6 +52,9 @@ class AMesh:
     def NumberPerBoundary(self):
         return self.nPerBoundary
 
+    def getNodeLabel(self, i):
+        return self.nodeLabel[i]
+
     def getElement(self, i):
         return self.elements[i]
 
@@ -64,9 +67,22 @@ class AMesh:
     def getBoundary(self, i):
         return self.boundaries[i].copy()
 
-    def getCoordInElement(self, ele):
-        return self.nodes[ele, :]
+    def getCoordFromIdx(self, idx):
+        return self.nodes[idx, :]
 
+    def getInteriorPointInElement(self, coord):
+        return coord.mean(axis=1)
+
+    def getBoundariesNodes(self, label):      # 已知边界label 求出该边界上所有的节点\
+        if label is None:
+            return np.unique(self.boundaries.flatten())
+        else:
+            bdNodes = []
+            for i in range(self.nb):
+                ele = self.boundaries[i, :]
+                if self.boundaryLabel[i] in label:
+                    bdNodes.extend(ele)
+        return np.unique(bdNodes)     # unique方法能删除列表的重复元素 并从小到大排序
 
     def saveMesh(self, fileName):
         f = open(fileName, 'w')

@@ -1,5 +1,6 @@
 from matplotlib import cm
-
+import numpy as np
+import abc
 from mesh.AbstractMesh import AMesh
 import matplotlib.pyplot as plt
 from matplotlib import *
@@ -30,3 +31,5 @@ class Mesh2DT3(AMesh):
         plt.colorbar(mapper, label="temperature")
         plt.triplot(self.nodes[:, 0], self.nodes[:, 1], self.elements, lw=0.5, alpha=0.3, color="k")
         plt.show()
+
+
