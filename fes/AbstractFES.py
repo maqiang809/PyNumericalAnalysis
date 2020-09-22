@@ -116,6 +116,7 @@ class FES:
         if direct is None:
             for nodeIdx in bdNodes:
                 coord = self.mesh.getCoordFromIdx(nodeIdx)
+                label = self.mesh.getNodeLabel(nodeIdx)
                 value = 0
                 if bdValue is not None:
                     if callable(bdValue):
@@ -124,16 +125,17 @@ class FES:
                         value = bdValue
                 localIdx = np.arange(self.dofPerNode) + nodeIdx * self.dofPerNode
                 for idx in localIdx:
-                    A.setElement(localIdx, localIdx, 1.0e30)
+                    A.setElement(idx, idx, 1.0e30)
                 RHS[localIdx] = value * 1.0e30
         else:
             offset = DIRECT[direct]
             for nodeIdx in bdNodes:
                 coord = self.mesh.getCoordFromIdx(nodeIdx)
+                label = self.mesh.getNodeLabel(nodeIdx)
                 value = 0
                 if bdValue is not None:
                     if callable(bdValue):
-                        value = bdValue(coord, self.mesh.getNodeLabel[nodeIdx], param)
+                        value = bdValue(coord, label, param)
                     else:
                         value = bdValue
                 localIdx = nodeIdx * self.dofPerNode + offset
@@ -145,10 +147,11 @@ class FES:
         if direct is None:
             for nodeIdx in bdNodes:
                 coord = self.mesh.getCoordFromIdx(nodeIdx)
+                label = self.mesh.getNodeLabel(nodeIdx)
                 value = 0
                 if bdValue is not None:
                     if callable(bdValue):
-                        value = bdValue(coord, self.mesh.getNodeLabel[nodeIdx], param)
+                        value = bdValue(coord, label, param)
                     else:
                         value = bdValue
                 RHS[np.arange(self.dofPerNode) + nodeIdx * self.dofPerNode] = value * 1.0e30
@@ -156,10 +159,11 @@ class FES:
             offset = DIRECT[direct]
             for nodeIdx in bdNodes:
                 coord = self.mesh.getCoordFromIdx(nodeIdx)
+                label = self.mesh.getNodeLabel(nodeIdx)
                 value = 0
                 if bdValue is not None:
                     if callable(bdValue):
-                        value = bdValue(coord, self.mesh.getNodeLabel[nodeIdx], param)
+                        value = bdValue(coord, label, param)
                     else:
                         value = bdValue
                 RHS[nodeIdx * self.dofPerNode + offset] = value * 1.0e30
@@ -172,20 +176,21 @@ class FES:
                 value = 0
                 if bdValue is not None:
                     if callable(bdValue):
-                        value = bdValue(coord, self.mesh.getNodeLabel[nodeIdx], param)
+                        value = bdValue(coord, label, param)
                     else:
                         value = bdValue
                 localIdx = np.arange(self.dofPerNode) + nodeIdx * self.dofPerNode
                 for idx in localIdx:
-                    A.setElement(localIdx, localIdx, 1.0e30)
+                    A.setElement(idx, idx, 1.0e30)
         else:
             offset = DIRECT[direct]
             for nodeIdx in bdNodes:
                 coord = self.mesh.getCoordFromIdx(nodeIdx)
+                label = self.mesh.getNodeLabel(nodeIdx)
                 value = 0
                 if bdValue is not None:
                     if callable(bdValue):
-                        value = bdValue(coord, self.mesh.getNodeLabel[nodeIdx], param)
+                        value = bdValue(coord, label, param)
                     else:
                         value = bdValue
                 localIdx = nodeIdx * self.dofPerNode + offset

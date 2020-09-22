@@ -29,7 +29,7 @@ class SMatrix:
                 self.mat[i] = []
             nnz = len(rowIdx)
             for i in range(nnz):
-                self.mat[rowIdx[i]].append(colIdx[i], values[i])
+                self.mat[rowIdx[i]].append([colIdx[i], values[i]])
         else:
             raise ValueError("Param Error!")
 
