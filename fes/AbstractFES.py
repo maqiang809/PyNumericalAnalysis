@@ -25,15 +25,28 @@ class FES:
         self.nPerBoundary = mesh.NumberPerBoundary
         self.dofPerBoundary = dofPerNode * mesh.NumberPerBoundary
 
+    def assembleGlobalMatrix(self, coef, param, EleMatFunc, tp, A):
+        if callable(coef):
+            self.assembleGlobalMatrix_Func(coef, param, EleMatFunc, tp, A)
+        elif isinstance(coef, np.ndarray):
+            ndim = coef.ndim
+            if ndim == 1:
+                self.assembleGlobalMatrix_Const(coef, EleMatFunc, tp, A)
+            elif ndim == 2:
+                self.assembleGlobalMatrix_Vector(coef, EleMatFunc, tp, A)
+            elif ndim == 3:
+                self.assembleGlobalMatrix_Matrix(coef, EleMatFunc, tp, A)
+        else:
+            raise ValueError("Wrong coef Type!")
 
-    def assembleGlobalMatrix_Func(self, coeffFunc, param, EleMatFunc, BVPType, A):
+    def assembleGlobalMatrix_Func(self, coeffFunc, param, EleMatFunc, tp, A):
         coef = np.zeros((len(coeffFunc), self.nPerEle), dtype=np.float)
         eleMatrix = np.zeros((self.dofPerElement, self.dofPerElement), dtype = np.float)
         for i in range(self.nE):
             ele = self.mesh.getElement(i)
             coord = self.mesh.getCoordFromIdx(ele)
             getCoefFromFunc(coeffFunc, coord, self.mesh.getElementLabel(i), param, coef)
-            EleMatFunc(coord, coef, BVPType, eleMatrix)
+            EleMatFunc(coord, coef, tp, eleMatrix)
             dof = getDof(ele, self.dofPerNode)
             A.assemble_RC(dof, dof, eleMatrix)
 
@@ -47,6 +60,28 @@ class FES:
             for j in range(nc):
                 coef[j, :] = constCoef[j]
             EleMatFunc(coord, coef, BVPType, eleMatrix)
+            dof = getDof(ele, self.dofPerNode)
+            A.assemble_RC(dof, dof, eleMatrix)
+
+    def assembleGlobalMatrix_Vector(self, vecCoef, EleMatFunc, BVPType, A):
+        nc = vecCoef.shape[0]
+        coef = np.zeros((nc, self.nPerEle), dtype=np.float)
+        eleMatrix = np.zeros((self.dofPerElement, self.dofPerElement), dtype = np.float)
+        for i in range(self.nE):
+            ele = self.mesh.getElement(i)
+            coord = self.mesh.getCoordFromIdx(ele)
+            for j in range(nc):
+                coef[j, :] = vecCoef[j, ele]
+            EleMatFunc(coord, coef, BVPType, eleMatrix)
+            dof = getDof(ele, self.dofPerNode)
+            A.assemble_RC(dof, dof, eleMatrix)
+
+    def assembleGlobalMatrix_Matrix(self, matrixCoef, EleMatFunc, BVPType, A):
+        eleMatrix = np.zeros((self.dofPerElement, self.dofPerElement), dtype = np.float)
+        for i in range(self.nE):
+            ele = self.mesh.getElement(i)
+            coord = self.mesh.getCoordFromIdx(ele)
+            EleMatFunc(coord, matrixCoef, BVPType, eleMatrix)
             dof = getDof(ele, self.dofPerNode)
             A.assemble_RC(dof, dof, eleMatrix)
 
@@ -105,7 +140,7 @@ class FES:
                 A.setElement(localIdx, localIdx, 1.0e30)
                 RHS[localIdx] = value * 1.0e30
 
-    def applyBC_MBN_M(self, RHS, direct=None, bdValue=None, param=None, label=None):
+    def applyBC_MBN_R(self, RHS, direct=None, bdValue=None, param=None, label=None):
         bdNodes = self.mesh.getBoundariesNodes(label)
         if direct is None:
             for nodeIdx in bdNodes:
@@ -129,7 +164,7 @@ class FES:
                         value = bdValue
                 RHS[nodeIdx * self.dofPerNode + offset] = value * 1.0e30
 
-    def applyBC_MBN_MR(self, A, direct=None, bdValue=None, param=None, label=None):
+    def applyBC_MBN_M(self, A, direct=None, bdValue=None, param=None, label=None):
         bdNodes = self.mesh.getBoundariesNodes(label)
         if direct is None:
             for nodeIdx in bdNodes:

@@ -8,7 +8,7 @@ fs = FES2DT31(mesh)
 nDof = fs.nDof
 A = SMatrix(size=nDof)
 
-fs.assembleStiff_const([1.0], "COMMON", A)
+fs.assembleStiff(np.array([1.0]), None, "COMMON", A)
 # A.sort()
 # A.printMatrix()
 RHS = np.zeros(nDof)
