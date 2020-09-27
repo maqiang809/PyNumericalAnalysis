@@ -23,7 +23,7 @@ print(nodes)
 print(RHS)
 
 fs.applyBC_MBN_MR(A, RHS, "x", 0.0, None, [1])
-fs.applyBC_MBN_MR(A, RHS, "x", 1.0, None, [2])
+fs.applyBC_MBN_MR(A, RHS, "x", 0.0, None, [2])
 A.printMatrix()
 solve = factorized(A.toCSC_Matrix())
 x = solve(RHS)
