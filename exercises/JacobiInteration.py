@@ -1,6 +1,6 @@
 import numpy as np
 
-def Jacobi(A, b, x0, esp):#A系数矩阵，x0初始解，esp误差
+def jacobi(A, b, x0, esp):#A系数矩阵，x0初始解，esp误差
     A = np.array(A, dtype=float)#dtype=float定义数组类型为浮点型
     (m, n) = np.shape(A)#shape()获取矩阵的行列数
     D = np.zeros((m, n))#zero()生成m×n阶的元素全为0的矩阵
@@ -36,7 +36,7 @@ b1=np.array([[-2],
              [12]])
 X0=([[0],[0],[0],[0]])
 esp=1e-5
-Jacobi(A1, b1, X0, esp)
+jacobi(A1, b1, X0, esp)
 
 A2=([[2,9],
      [8,3]])
@@ -44,4 +44,4 @@ b2=([[-5],
      [13]])
 x0=([0],
     [0])
-Jacobi(A2, b2, x0, esp)
+jacobi(A2, b2, x0, esp)

@@ -1,15 +1,17 @@
 import numpy as np
-def GS(A,b,x0,esp):
+def gs(A,b,x0,esp):
     A = np.array(A, dtype=float)#dtype=float定义数组类型为浮点型
     (m, n) = np.shape(A)#shape()获取矩阵的行列数
     D = np.zeros((m, n))#zero()生成m×n阶的元素全为0的矩阵
     L=np.zeros((m,n))
     for i in range(m):
         D[i,i]=A[i,i]#取D为A的对角元素矩阵
+
     for i in range(m):
         for j in range(n):
             if i>=j:
                 L[i,j]=A[i,j]#取L为A的下三角阵
+
     if np.linalg.det(D+L) ==0.0:
         print("GaussSeidal cannot be used!Please input again.")
     else:
@@ -39,11 +41,11 @@ b1 = np.array([[-2],
                [12]])
 X0 = ([[0], [0], [0], [0]])
 esp = 1e-5
-GS(A1, b1, X0, esp)
+gs(A1, b1, X0, esp)
 A2 = ([[2, 9],
        [8, 3]])
 b2 = ([[-5],
        [13]])
 x0 = ([0],
       [0])
-GS(A2, b2, x0, esp)
+gs(A2, b2, x0, esp)

@@ -2,7 +2,7 @@ from mesh.AbstractMesh import AMesh
 import matplotlib.pyplot as plt
 class Mesh1DL2(AMesh):
     def __init__(self):
-        AMesh.__init__(self)
+        AMesh.__init__(self)#继承父类初始化过程
         self.nDim = 1
         self.nPerElement = 2
         self.nPerBoundary = 1
