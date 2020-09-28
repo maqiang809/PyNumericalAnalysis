@@ -3,7 +3,7 @@ from fes.FES1DL21 import FES1DL21
 from mesh.MeshGenerator import line1DL2
 from numerics.SparseMatrix import SMatrix
 from scipy.sparse.linalg import *
-mesh = line1DL2(0.0, 1.0, 100)
+mesh = line1DL2(0.0, 1.0, 10)
 fs = FES1DL21(mesh)
 nDof = fs.nDof
 A = SMatrix(size=nDof)
@@ -23,7 +23,7 @@ print(nodes)
 print(RHS)
 
 fs.applyBC_MBN_MR(A, RHS, "x", 0.0, None, [1])
-fs.applyBC_MBN_MR(A, RHS, "x", 1.0, None, [2])
+fs.applyBC_MBN_MR(A, RHS, "x", 0.0, None, [2])
 A.printMatrix()
 solve = factorized(A.toCSC_Matrix())
 x = solve(RHS)

@@ -3,7 +3,7 @@ from fes.FES2DT31 import FES2DT31
 from mesh.MeshGenerator import square2D
 from numerics.SparseMatrix import SMatrix
 from scipy.sparse.linalg import *
-mesh = square2D(100, 100, 1)
+mesh = square2D(200, 200, 1)
 fs = FES2DT31(mesh)
 nDof = fs.nDof
 A = SMatrix(size=nDof)
