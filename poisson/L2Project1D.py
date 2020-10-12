@@ -10,3 +10,4 @@ mesh.printBoundaries()
 print(mesh.nodes)
 print(mesh.elements)
 print(mesh.boundaries)
+
