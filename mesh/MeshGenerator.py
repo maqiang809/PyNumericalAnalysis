@@ -35,6 +35,7 @@ def square2D(xNum, yNum, T3Type):
     createSquareBoundarys(mesh, xNum, yNum)
     return mesh
 
+
 def createSquareElements(mesh, xNum, yNum, T3Type):
     ti1 = 0
     tj1 = 0
