@@ -22,6 +22,11 @@ class Mesh2DT3(AMesh):
             y = self.nodes[i, 1]
             self.nodes[i, 0] = sx * x
             self.nodes[i, 1] = sy * y
+    def transform(self, fx, fy):
+        for i in range(self.nv):
+            x, y = self.nodes[i, 0], self.nodes[i, 1]
+            self.nodes[i, 0] = fx(x, y)
+            self.nodes[i, 1] = fy(x, y)
     def plotMesh(self):
         plt.figure()
         plt.gca().set_aspect('equal')
