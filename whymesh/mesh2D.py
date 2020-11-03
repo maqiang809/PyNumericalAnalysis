@@ -18,6 +18,12 @@ class Mesh2D3T:
         self.boundaries = None
         self.boundaryLabel = None
 
+    def scale(self, sx, sy):
+        for i in range(self.nv):
+            x = self.nodes[i, 0]
+            y = self.nodes[i, 1]
+            self.nodes[i, 0] = sx * x
+            self.nodes[i, 0] = sy * y
     def initMesh0(self, nv, nt, nb):
         self.nv = nv
         self.nt = nt

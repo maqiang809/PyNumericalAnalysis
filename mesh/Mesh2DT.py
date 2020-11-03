@@ -15,7 +15,12 @@ class Mesh2DT3(AMesh):
         self.nBoundaryPerElement = 3
         self.nEdgePerBoundary = 1
         self.tecplotType = "FETRIANGLE"
-
+    def scale(self, sx, sy):
+        for i in range(self.nv):
+            x = self.nodes[i, 0]
+            y = self.nodes[i, 1]
+            self.nodes[i, 0] = sx * x
+            self.nodes[i, 0] = sy * y
     def plotMesh(self):
         plt.figure()
         plt.gca().set_aspect('equal')
@@ -31,5 +36,6 @@ class Mesh2DT3(AMesh):
         plt.colorbar(mapper, label="temperature")
         plt.triplot(self.nodes[:, 0], self.nodes[:, 1], self.elements, lw=0.5, alpha=0.3, color="k")
         plt.show()
+
 
 
