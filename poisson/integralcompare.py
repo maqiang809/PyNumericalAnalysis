@@ -19,23 +19,26 @@ def area3(x, y):
     S = S / 2
     return S
 
-def I1(fun, c):
+def I1(f, c):
     I1 = 0
     for i in range(c):
         ff = 0
         x = np.zeros(3)
         y = np.zeros(3)
+        f12= 0
         for j in range(3):
             xx = nodes[elements[i, j]]
             x[j] = xx[0]
             y[j] = xx[1]
-            ff += f(xx[0], xx[1])
+            ff += f(xx[0], xx[1]) ** 2 +f(xx[0], xx[1]) * f12
+            f12 = f(xx[0], xx[1])
         K = area3(x, y)
-        I1 += (1 / 6) * K * ff ** 2
+        ff += f12 * f(nodes[elements[i, 0]][0], nodes[elements[i, 0]][1])
+        I1 += (1 / 6) * K * ff
     print(I1)
 
 
-def I2(fun,c):
+def I2(f,c):
     I2 = 0
     for i in range(c):
         x = np.zeros(3)
@@ -45,13 +48,13 @@ def I2(fun,c):
             xx = nodes[elements[i, j]]
             x[j] = xx[0]
             y[j] = xx[1]
-            h += f(xx[0], xx[1]) ** 2
+            h += f(xx[0], xx[1]) *f(xx[0], xx[1])
         K = area3(x, y)
         I2 += h * K * (1/3)
     print(I2)
 
 
-c = (n+1) * (n+1)
+c = 2*100 * 100
 
 
 def f(x, y):
