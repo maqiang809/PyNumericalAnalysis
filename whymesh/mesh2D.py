@@ -117,11 +117,46 @@ def createRectangleBoundarys(mesh, xNum, yNum):
         mesh.boundaries[idx], mesh.boundaryLabel[idx] = [local, local - (xNum + 1)], 4
         idx += 1
 
-mesh=rectangle2D(5,3,4,2)
-print("Nodes:")
+
+
+
+mesh=rectangle2D(10,10,1,1)
+'''print("Nodes:")
 mesh.printNodes()
 print("Elements:")
 mesh.printElements()
 print("Boundaries:")
 mesh.printBoundaries()
-mesh.plotMesh()
+mesh.plotMesh()'''
+
+f =lambda x,y : np.exp(x+y)
+#f =lambda x,y : pow(x,2)*y
+def areaK(xy):#xy为存储三角形顶点的数组,按逆时针存储
+    S=0
+    S=xy[1,0]*xy[2,1]-xy[2,0]*xy[1,1]-xy[0,0]*xy[2,1]+xy[2,0]*xy[0,1]+xy[0,0]*xy[1,1]-xy[1,0]*xy[0,1]
+    S=S/2
+    return S
+
+nt=mesh.nt
+value1=0
+for i in range (nt):
+    ele = mesh.elements[i, :]
+    xy = mesh.nodes[ele, :]
+    Ki = areaK(xy)
+    for j in range(3):
+        value1=value1+(1/6)*Ki*pow(f(xy[j,0],xy[j,1]),2)
+    value1=value1+(1/6)*Ki*(f(xy[0,0],xy[0,1])*(f(xy[1,0],xy[1,1])+f(xy[2,0],xy[2,1]))+f(xy[1,0],xy[1,1])*f(xy[2,0],xy[2,1]))
+print("法1：",value1)
+
+value2=0
+for i in range (nt):
+    ele=mesh.elements[i,:]
+    xy=mesh.nodes[ele,:]
+    Ki=areaK(xy)
+    for j in range(3):
+        value2=value2+(1/3)*Ki*f(xy[j,0],xy[j,1])*f(xy[j,0],xy[j,1])
+print("法2：",value2)
+
+
+
+
