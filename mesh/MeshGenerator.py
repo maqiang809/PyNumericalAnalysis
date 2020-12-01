@@ -110,7 +110,7 @@ def createSquareBoundarys(mesh, xNum, yNum):
         mesh.boundaries[idx], mesh.boundaryLabel[idx] = [local, local - (xNum + 1)], 4
         idx += 1
 
-def readMesh2T3(self, fileName):
+def readMesh2T3(fileName):
     f = open(fileName, 'r')
     line = f.readline()
     list = line.split()
@@ -121,16 +121,20 @@ def readMesh2T3(self, fileName):
     mesh.initMesh0(nv, nt, nb)
     for i in range(nv):
         node = f.readline().split()
-        mesh.nodes[i, :] = float(node[0:2])
-        mesh.nodesLabel[i] = int(node[2])
+        mesh.nodes[i, 0] = float(node[0])
+        mesh.nodes[i, 1] = float(node[1])
+        mesh.nodeLabel[i] = int(node[2])
     for i in range(nt):
         element = f.readline().split()
-        mesh.elements[i, :] = int(element[0:3]) - 1
-        mesh.elementsLabel[i] = int(element[3])
+        mesh.elements[i, 0] = int(element[0]) - 1
+        mesh.elements[i, 1] = int(element[1]) - 1
+        mesh.elements[i, 2] = int(element[2]) - 1
+        mesh.elementLabel[i] = int(element[3])
     for i in range(nb):
         boundary = f.readline().split()
-        mesh.boundaries[i, :] = int(boundary[0:2]) - 1
-        mesh.boundariesLabel[i] = int(boundary[2])
+        mesh.boundaries[i, 0] = int(boundary[0]) - 1
+        mesh.boundaries[i, 1] = int(boundary[1]) - 1
+        mesh.boundaryLabel[i] = int(boundary[2])
     return mesh
 
 # mesh = square2D(4, 4, 1)
