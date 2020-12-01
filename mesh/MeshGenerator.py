@@ -19,7 +19,6 @@ def line1DL2(a, b, num):
     mesh.boundaryLabel[1] = 2
     return mesh
 
-
 def square2D(xNum, yNum, T3Type):
     mesh = Mesh2DT3()
     nv = (xNum + 1) * (yNum + 1)
@@ -110,6 +109,29 @@ def createSquareBoundarys(mesh, xNum, yNum):
         local = (yNum - i) * (xNum + 1)
         mesh.boundaries[idx], mesh.boundaryLabel[idx] = [local, local - (xNum + 1)], 4
         idx += 1
+
+def readMesh2T3(self, fileName):
+    f = open(fileName, 'r')
+    line = f.readline()
+    list = line.split()
+    nv = int(list[0])
+    nt = int(list[1])
+    nb = int(list[2])
+    mesh = Mesh2DT3()
+    mesh.initMesh0(nv, nt, nb)
+    for i in range(nv):
+        node = f.readline().split()
+        mesh.nodes[i, :] = float(node[0:2])
+        mesh.nodesLabel[i] = int(node[2])
+    for i in range(nt):
+        element = f.readline().split()
+        mesh.elements[i, :] = int(element[0:3]) - 1
+        mesh.elementsLabel[i] = int(element[3])
+    for i in range(nb):
+        boundary = f.readline().split()
+        mesh.boundaries[i, :] = int(boundary[0:2]) - 1
+        mesh.boundariesLabel[i] = int(boundary[2])
+    return mesh
 
 # mesh = square2D(4, 4, 1)
 # mesh.printBoundaries()

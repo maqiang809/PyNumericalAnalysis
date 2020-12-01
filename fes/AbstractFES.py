@@ -97,7 +97,6 @@ class FES:
             dof = getDof(ele, self.dofPerNode)
             VEC[dof] += eleVec
 
-
     def assembleGlobalVector_Const(self, constCoef, EleVecFunc, BVPType, VEC):
         nc = len(constCoef)
         coef = np.zeros((nc, self.nPerEle), dtype=np.float)

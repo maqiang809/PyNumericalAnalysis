@@ -9,6 +9,7 @@ class FES2DT31(FES):
 
     def assembleStiff(self, coef, param, tp, A):
         self.assembleGlobalMatrix(coef, param, elementHeatStiff2DT3, tp, A)
+
     def assembleStiff_const(self, coef, tp, A):
         self.assembleGlobalMatrix_Const(coef, elementHeatStiff2DT3, tp, A)
 
