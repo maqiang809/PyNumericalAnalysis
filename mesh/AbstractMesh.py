@@ -67,6 +67,9 @@ class AMesh:
     def getBoundary(self, i):
         return self.boundaries[i].copy()
 
+    def getBoundaryLabel(self, i):
+        return self.boundaryLabel[i]
+
     def getCoordFromIdx(self, idx):
         return self.nodes[idx, :]
 

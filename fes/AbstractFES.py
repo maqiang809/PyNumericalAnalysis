@@ -26,7 +26,7 @@ class FES:
         self.dofPerBoundary = dofPerNode * mesh.NumberPerBoundary
 
     def assembleGlobalMatrix(self, coef, param, EleMatFunc, tp, A):
-        if callable(coef):
+        if callable(coef[0]):
             self.assembleGlobalMatrix_Func(coef, param, EleMatFunc, tp, A)
         elif isinstance(coef, np.ndarray):
             ndim = coef.ndim
@@ -85,6 +85,19 @@ class FES:
             dof = getDof(ele, self.dofPerNode)
             A.assemble_RC(dof, dof, eleMatrix)
 
+
+    def assembleGlobalVector(self, coef, param, EleMatFunc, tp, A):
+        if callable(coef[0]):
+            self.assembleGlobalVector_Func(coef, param, EleMatFunc, tp, A)
+        elif isinstance(coef, np.ndarray):
+            ndim = coef.ndim
+            if ndim == 1:
+                self.assembleGlobalVector_Const(coef, EleMatFunc, tp, A)
+            elif ndim == 2:
+                self.assembleGlobalVector_Vector(coef, EleMatFunc, tp, A)
+        else:
+            raise ValueError("Wrong coef Type!")
+
     def assembleGlobalVector_Func(self, FuncCoef, param, EleVecFunc, BVPType, VEC):
         nc = len(FuncCoef)
         coef = np.zeros((nc, self.nPerEle), dtype=np.float)
@@ -109,6 +122,72 @@ class FES:
             EleVecFunc(coord, coef, BVPType, eleVec)
             dof = getDof(ele, self.dofPerNode)
             VEC[dof] += eleVec
+
+    def assembleGlobalVector_Vec(self, vecCoef, EleVecFunc, BVPType, VEC):
+        nc = vecCoef.shape[0]
+        coef = np.zeros((nc, self.nPerEle), dtype=np.float)
+        eleVec = np.zeros(self.dofPerElement, dtype = np.float)
+        for i in range(self.nE):
+            ele = self.mesh.getElement(i)
+            coord = self.mesh.getCoordFromIdx(ele)
+            for j in range(nc):
+                coef[j, :] = vecCoef[j, ele]
+            EleVecFunc(coord, coef, BVPType, eleVec)
+            dof = getDof(ele, self.dofPerNode)
+            VEC[dof] += eleVec
+
+    def assembleBoundaryVector(self, coef, param, EleMatFunc, tp, VEC, bdLabel):
+        if callable(coef[0]):
+            self.assembleBoundaryVector_Func(coef, param, EleMatFunc, tp, VEC, bdLabel)
+        elif isinstance(coef, np.ndarray):
+            ndim = coef.ndim
+            if ndim == 1:
+                self.assembleBoundaryVector_Const(coef, EleMatFunc, tp, VEC, bdLabel)
+            elif ndim == 2:
+                self.assembleBoundaryVector_Vector(coef, EleMatFunc, tp, VEC, bdLabel)
+        else:
+            raise ValueError("Wrong coef Type!")
+
+    def assembleBoundaryVector_Const(self, constCoef, EleVecFunc, BVPType, VEC, bdLabel):
+        nc = len(constCoef)
+        coef = np.zeros((nc, self.nPerBoundary), dtype = np.float)
+        eleVec = np.zeros(self.dofPerBoundary, dtype = np.float)
+        for i in range(self.nB):
+            if self.mesh.getBoundaryLabel(i) in bdLabel:
+                ele = self.mesh.getBoundary(i)
+                coord = self.mesh.getCoordFromIdx(ele)
+                for j in range(nc):
+                    coef[j, :] = constCoef[j]
+                EleVecFunc(coord, coef, BVPType, eleVec)
+                dof = getDof(ele, self.dofPerNode)
+                VEC[dof] += eleVec
+
+    def assembleBoundaryVector_Func(self, FuncCoef, param, EleVecFunc, BVPType, VEC, bdLabel):
+        nc = len(FuncCoef)
+        coef = np.zeros((nc, self.nPerBoundary), dtype=np.float)
+        eleVec = np.zeros(self.dofPerBoundary, dtype = np.float)
+        for i in range(self.nB):
+            if self.mesh.getBoundaryLabel(i) in bdLabel:
+                ele = self.mesh.getElement(i)
+                coord = self.mesh.getCoordFromIdx(ele)
+                getCoefFromFunc(FuncCoef, coord, self.mesh.getBoundaryLabel(i), param, coef)
+                EleVecFunc(coord, coef, BVPType, eleVec)
+                dof = getDof(ele, self.dofPerNode)
+                VEC[dof] += eleVec
+
+    def assembleBoundaryVector_Vec(self, vecCoef, EleVecFunc, BVPType, VEC, bdLabel):
+        nc = vecCoef.shape[0]
+        coef = np.zeros((nc, self.nPerBoundary), dtype=np.float)
+        eleVec = np.zeros(self.dofPerBoundary, dtype = np.float)
+        for i in range(self.nB):
+            if self.mesh.getBoundaryLabel(i) in bdLabel:
+                ele = self.mesh.getBoundary(i)
+                coord = self.mesh.getCoordFromIdx(ele)
+                for j in range(nc):
+                    coef[j, :] = vecCoef[j, ele]
+                EleVecFunc(coord, coef, BVPType, eleVec)
+                dof = getDof(ele, self.dofPerNode)
+                VEC[dof] += eleVec
 
     def applyBC_MBN_MR(self, A, RHS, direct=None, bdValue=None, param=None, label=None):
         bdNodes = self.mesh.getBoundariesNodes(label)

@@ -27,3 +27,38 @@ def elementHeatStiff2DT3(coord, coef, tp, eleMatrix):
         eleMatrix[:, :] = np.dot(np.dot(grad, coef), np.transpose(grad)) * (area * np.average(coord[:, 0]))
     else:
         raise ValueError("Wrong BVPType!")
+
+def elementHeatMass2DT3(coord, coef, tp, eleMatrix):
+    area = area2DT3(coord)
+    ccoef = coef[0].copy()
+    eleMatrix[:, :] = 0.0
+    mcoef = 0.0;
+    if tp == "CONSIST_MATRIX":
+        ccoef *= area / 60.0
+        mcoef = np.sum(ccoef)
+        for i in range(3):
+            for j in range(3):
+                if i == j:
+                    eleMatrix[i, i] = 2 * (2 * ccoef[i] + mcoef)
+                else:
+                    eleMatrix[i, j] = ccoef[i] + ccoef[j] + mcoef
+    elif tp == "LUMP_MATRIX":
+        ccoef *= area / 12.0
+        mcoef = np.sum(ccoef)
+        for i in range(3):
+            eleMatrix[i, i] = ccoef[i] + mcoef;
+    elif tp == "AXIS_LUMP_MATRIX":
+        ccoef *= coord[:, 0] * area / 60.0
+        mcoef = np.sum(ccoef)
+        for i in range(3):
+            for j in range(3):
+                if i == j:
+                    eleMatrix[i, i] = 2 * (2 * ccoef[i] + mcoef)
+                else:
+                    eleMatrix[i, j] = ccoef[i] + ccoef[j] + mcoef
+    elif tp == "AXIS_LUMP_MATRIX":
+        ccoef *= coord[:, 0] * area / 12.0
+        for i in range(3):
+            eleMatrix[i, i] = ccoef[i] + mcoef
+    else:
+        raise ValueError("Wrong BVPType")

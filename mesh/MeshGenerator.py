@@ -91,7 +91,6 @@ def createSquareElements(mesh, xNum, yNum, T3Type):
             mesh.elements[idx] = [ti2, tj2, tk2]
             idx += 1
 
-
 def createSquareBoundarys(mesh, xNum, yNum):
     idx = 0
     for i in range(xNum):

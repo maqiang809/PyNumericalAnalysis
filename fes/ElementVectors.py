@@ -27,3 +27,14 @@ def elementSource2DT3(xy, f, tp, eleVec):
         eleVec[:] = 0.0
     else:
         raise ValueError("Wrong Type!")
+
+def elementFlux2DT3(xy, f, tp, eleVec):
+    len = length2DL2(xy)
+    sumF = np.sum(f[0])
+    eleVec[:] = 0.0
+    if tp == "COMMON":
+        eleVec[:] = (f[0, :] + sumF) * len / 6.0
+    elif tp == "AXISYMMETRIC":
+        eleVec[:] = 0.0
+    else:
+        raise ValueError("Wrong Type!")
