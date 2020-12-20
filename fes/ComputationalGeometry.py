@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def length2DL2(xy):
     """
     compute the length of a two-dimensional line
@@ -7,6 +8,7 @@ def length2DL2(xy):
     :return: length of the line
     """
     return np.sqrt((xy[0][0] - xy[1][0]) * (xy[0][0] - xy[1][0]) + (xy[0][1] - xy[1][1]) * (xy[0][1] - xy[1][1]))
+
 
 def area2DT3(xy):
     """
@@ -17,16 +19,23 @@ def area2DT3(xy):
     x, y = xy[:, 0], xy[:, 1]
     return 0.5 * ((x[1] - x[0]) * (y[2] - y[0]) - (x[2] - x[0]) * (y[1] - y[0]))
 
+
 def area2DQ4(xy):
     """
     compute the area of a two-dimensional quadrilateral
-    :param xy: 4x2 array, vertices of the quadrilaterl,
+    :param xy: 4x2 array, vertices of the quadrilateral,
     :return: the area
     """
     xy1, xy2 = xy[[0, 1, 2], :], xy[[0, 2, 3], :]
     return area2DT3(xy1) + area2DT3(xy2)
 
+
 def area3DT3(xyz):
+    """
+    compute the area of a three-dimensional triangle
+    :param xyz: three vertices of the triangles, size: 3 x 3
+    :return: the area ,  n = UxV
+    """
     x, y, z = xyz[:, 0], xyz[:, 1], xyz[:, 2]
     U = np.array([x[1] - x[0], y[1] - y[0], z[1] - z[0]])
     V = np.array([x[2] - x[0], y[2] - y[0], z[2] - z[0]])
@@ -37,14 +46,16 @@ def area3DT3(xyz):
     n = np.array([a1, a2, a3]) / area
     return area, n
 
+
 def area3DQ4(xyz):
     xyz1, xyz2 = xyz[[0, 1, 2], :], xyz[[0, 2, 3], :]
     area1, n1 = area3DT3(xyz1)
     area2, n2 = area3DT3(xyz2)
     return area3DT3(xyz1) + area3DT3(xyz2), 0.5 * (n1 + n2)
 
+
 def volume3DT4(coord):
-    x, y, z= coord[:, 0], coord[:, 1], coord[:, 2]
+    x, y, z = coord[:, 0], coord[:, 1], coord[:, 2]
     x1x0 = x[1] - x[0]
     x2x0 = x[2] - x[0]
     x3x0 = x[3] - x[0]
@@ -55,17 +66,20 @@ def volume3DT4(coord):
     z2z0 = z[2] - z[0]
     z3z0 = z[3] - z[0]
     volume6 = x1x0 * (y2y0 * z3z0 - y3y0 * z2z0) - x2x0 * (y1y0 * z3z0 - y3y0 * z1z0) \
-                + x3x0 * (y1y0 * z2z0 - y2y0 * z1z0)
+              + x3x0 * (y1y0 * z2z0 - y2y0 * z1z0)
     return np.abs(volume6) / 6.0
+
 
 def volume3DH8(xyz):
     pass
 
+
 def gradient1DL2(coord):
     x = coord[:, 0]
     len = np.abs(x[0] - x[1])
-    grad = np.array([-1.0/len, 1.0/len])
+    grad = np.array([-1.0 / len, 1.0 / len])
     return grad, len
+
 
 def gradient2DT3(coord):
     x, y = coord[:, 0], coord[:, 1]
@@ -79,6 +93,7 @@ def gradient2DT3(coord):
     grad[1][1] = A2D * (x[0] - x[2])
     grad[2][1] = A2D * (x[1] - x[0])
     return grad, area
+
 
 def gradient3DT4(coord):
     x, y, z = coord[:, 0], coord[:, 1], coord[:, 2]
@@ -98,7 +113,8 @@ def gradient3DT4(coord):
     z2z1 = z[2] - z[1]
     z3z1 = z[3] - z[1]
 
-    volume6 = x1x0 * (y2y0 * z3z0 - y3y0 * z2z0) - x2x0 * (y1y0 * z3z0 - y3y0 * z1z0) + x3x0 * (y1y0 * z2z0 - y2y0 * z1z0)
+    volume6 = x1x0 * (y2y0 * z3z0 - y3y0 * z2z0) - x2x0 * (y1y0 * z3z0 - y3y0 * z1z0) + x3x0 * (
+            y1y0 * z2z0 - y2y0 * z1z0)
     grad = np.zeros(4, 3)
     grad[0][0] = -(y2y1 * z3z1 - y3y1 * z2z1) / volume6
     grad[0][1] = +(x2x1 * z3z1 - x3x1 * z2z1) / volume6
@@ -117,10 +133,12 @@ def gradient3DT4(coord):
 
 
 def Q4ShapeFunction(xi, et):
-    h = np.array([0.25 * (1 - xi) * (1 - et), 0.25 * (1 + xi) * (1 - et), 0.25 * (1 + xi) * (1 + et), 0.25 * (1 - xi) * (1 + et)])
-    dXi = np.array([0.25 * (et - 1), 0.25 * (1 - et),  0.25 * (1 + et), 0.25 * (-1 - et)])
+    h = np.array([0.25 * (1 - xi) * (1 - et), 0.25 * (1 + xi) * (1 - et), 0.25 * (1 + xi) * (1 + et),
+                  0.25 * (1 - xi) * (1 + et)])
+    dXi = np.array([0.25 * (et - 1), 0.25 * (1 - et), 0.25 * (1 + et), 0.25 * (-1 - et)])
     dEt = np.array([0.25 * (xi - 1), 0.25 * (-1 - xi), 0.25 * (1 + xi), 0.25 * (1 - xi)])
     return h, dXi, dEt
+
 
 def Q8ShapeFunction(xi, et):
     h = np.zeros(8)
@@ -155,6 +173,7 @@ def Q8ShapeFunction(xi, et):
     dEt[6] = 0.5 * (1 - xi * xi)
     dEt[7] = et * (xi - 1)
     return h, dXi, dEt
+
 
 def H8ShapeFunction(xi, et, zt, h, dXi, dEt, dZt):
     h[0] = 0.125 * (1 - xi) * (1 - et) * (1 - zt)
@@ -193,6 +212,7 @@ def H8ShapeFunction(xi, et, zt, h, dXi, dEt, dZt):
     dZt[5] = 0.125 * (1 + xi) * (1 - et)
     dZt[6] = 0.125 * (1 + xi) * (1 + et)
     dZt[7] = 0.125 * (1 - xi) * (1 + et)
+
 
 def H20ShapeFunction(xi, et, zt, h, dXi, dEt, dZt):
     h[0] = 0.125 * (1 - xi) * (1 - et) * (1 - zt) * (-2 - xi - et - zt)
@@ -295,9 +315,10 @@ def H20ShapeFunction(xi, et, zt, h, dXi, dEt, dZt):
     dZt[18] = -0.5 * zt * (1 + xi) * (1 + et)
     dZt[19] = -0.5 * zt * (1 - xi) * (1 + et)
 
+
 def T6ShapeFunction(xy, L):
     xxyy = xy[0:2, 0:1]
-    grad, area= gradient2DT3(xxyy)
+    grad, area = gradient2DT3(xxyy)
     dxL, dyL = grad[:][0], grad[:][1]
     L1, L2, L3 = L[0], L[1], L[2]
     N = np.zeros(5)
@@ -322,6 +343,7 @@ def T6ShapeFunction(xy, L):
     gradN[5][1] = 4 * (dyL[0] * L3 + L1 * dyL[2])
     return N, gradN, area
 
+
 def ISOMap2D(isoFunc, x, y, xi, et):
     n = len(x)
     v = np.zeros(n)
@@ -339,6 +361,7 @@ def ISOMap2D(isoFunc, x, y, xi, et):
         dx[i] = (j22 * dXi[i] - j12 * dEt[i]) / detJ
         dy[i] = (-j21 * dXi[i] + j11 * dEt[i]) / detJ
     return detJ, v, dx, dy
+
 
 def ISOMap3D(isoFunc, x, y, z, xi, et, zt):
     n = len(x)
@@ -370,6 +393,7 @@ def ISOMap3D(isoFunc, x, y, z, xi, et, zt):
     dy = (dXi * B21 + dEt * B22 + dZt * B23) / detJ
     dz = (dXi * B31 + dEt * B32 + dZt * B33) / detJ
     return detJ, v, dx, dy, dz
+
 
 def ISOMap3DTo2D(isoFunc, x, y, z, xi, et, u):
     n = len(x)
